@@ -60,33 +60,38 @@ def test_vs_docking():
             energy_range=6,
             num_modes=7,
             size=(20, 20, 20),
-            seed=0)
+            seed=1234567890)
     mols = list(vs.fetch())
     assert len(mols) == 7
     mol_data = mols[0].data
     assert 'vina_affinity' in mol_data
     assert 'vina_rmsd_lb' in mol_data
     assert 'vina_rmsd_ub' in mol_data
-    if oddt.toolkit.backend == 'ob' and oddt.toolkit.__version__ < '2.4.0':
-        vina_scores = [-5.3, -4.0, -3.8, -3.7, -3.4, -3.4, -3.0]
+    if oddt.toolkit.backend == 'ob':
+        if oddt.toolkit.__version__ < '2.4.0':
+            vina_scores = [-6.1, -6.1, -4.6, -4.3, -4.3, -3.7, -3.7]
+        else:
+            vina_scores = [-5.8, -5.5, -5.3, -4.5, -4.0, -3.8, -3.8]
     else:
-        vina_scores = [-6.3, -6.0, -5.8, -5.8, -3.9, -3.0, -1.1]
+        vina_scores = [-5.8, -5.5, -5.3, -4.4, -3.9, -3.8, -3.8]
     assert_array_equal([float(m.data['vina_affinity']) for m in mols], vina_scores)
 
     # verify the SMILES of molecules
     ref_mol = next(oddt.toolkit.readfile('sdf', xiap_crystal_ligand))
 
-    if oddt.toolkit.backend == 'ob' and oddt.toolkit.__version__ < '2.4.0':
-        # OB 2.3.2 will fail the following, since Hs are removed, etc.
-        pass
+    if oddt.toolkit.backend == 'ob':
+        if oddt.toolkit.__version__ < '2.4.0':
+            # OB 2.3.2 will fail the following, since Hs are removed, etc.
+            return None
+        else:
+            vina_rmsd = [5.318, 8.537, 7.538, 7.940, 8.068, 7.585, 7.785]
     else:
-        vina_rmsd = [8.153314, 5.32554, 8.514586, 8.510169, 9.060128, 8.995098,
-                     8.626776]
-        assert_array_equal([mol.smiles for mol in mols],
-                           [ref_mol.smiles] * len(mols))
+        vina_rmsd = [5.290, 8.537,  7.538,  7.940, 8.068, 7.585, 7.785]
+    assert_array_equal([mol.smiles for mol in mols],
+                       [ref_mol.smiles] * len(mols))
 
-        assert_array_almost_equal([rmsd(ref_mol, mol, method='min_symmetry')
-                                   for mol in mols], vina_rmsd)
+    assert_array_almost_equal([rmsd(ref_mol, mol, method='min_symmetry')
+                               for mol in mols], vina_rmsd, decimal=3)
 
 
 def test_vs_empty():

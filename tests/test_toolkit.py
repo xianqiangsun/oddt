@@ -17,6 +17,9 @@ xiap_receptor = os.path.join(test_data_dir, 'data', 'dude', 'xiap',
                              'receptor_rdkit.pdb')
 xiap_actives = os.path.join(test_data_dir, 'data', 'dude', 'xiap',
                             'actives_docked.sdf')
+xiap_crystal_ligand = os.path.join(test_data_dir, 'data', 'dude', 'xiap',
+                                   'crystal_ligand.sdf')
+
 
 
 def test_mol():
@@ -486,9 +489,8 @@ def test_pdbqt():
     else:
         assert_array_equal(nodes_size(mol.write('pdbqt')),
                            [8, 6, 7, 2])
-    ligand_file = os.path.join(test_data_dir, 'data', 'dude', 'xiap',
-                               'crystal_ligand.sdf')
-    mol = next(oddt.toolkit.readfile('sdf', ligand_file))
+
+    mol = next(oddt.toolkit.readfile('sdf', xiap_crystal_ligand))
     assert_array_equal(nodes_size(mol.write('pdbqt')),
                        [8, 3, 6, 6, 1, 6, 3, 2, 2])
 

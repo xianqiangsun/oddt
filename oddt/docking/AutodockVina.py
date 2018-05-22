@@ -85,7 +85,7 @@ class autodock_vina(object):
             if isinstance(auto_ligand, string_types):
                 extension = auto_ligand.split('.')[-1]
                 auto_ligand = next(oddt.toolkit.readfile(extension, auto_ligand))
-            self.center = auto_ligand.coords.mean(axis=0).round(3)
+            self.center = auto_ligand.coords.mean(axis=0).tolist()
         # autodetect Vina executable
         if not executable:
             try:
@@ -116,20 +116,20 @@ class autodock_vina(object):
 
         # pregenerate common Vina parameters
         self.params = []
-        self.params += ['--center_x', str(self.center[0]),
-                        '--center_y', str(self.center[1]),
-                        '--center_z', str(self.center[2])]
-        self.params += ['--size_x', str(self.size[0]),
-                        '--size_y', str(self.size[1]),
-                        '--size_z', str(self.size[2])]
-        self.params += ['--exhaustiveness', str(exhaustiveness)]
+        self.params += ['--center_x', '%.3f' % self.center[0],
+                        '--center_y', '%.3f' % self.center[1],
+                        '--center_z', '%.3f' % self.center[2]]
+        self.params += ['--size_x', '%.3f' % self.size[0],
+                        '--size_y', '%.3f' % self.size[1],
+                        '--size_z', '%.3f' % self.size[2]]
+        self.params += ['--exhaustiveness', '%i' % exhaustiveness]
         if seed is not None:
-            self.params += ['--seed', str(seed)]
+            self.params += ['--seed', '%i' % seed]
         if num_modes > 9 or num_modes < 1:
             raise ValueError('The number of docked poses must be between 1 and 9'
                              ' (due to Autodock Vina limitation).')
-        self.params += ['--num_modes', str(num_modes)]
-        self.params += ['--energy_range', str(energy_range)]
+        self.params += ['--num_modes', '%i' % num_modes]
+        self.params += ['--energy_range', '%.3f' % energy_range]
 
     @property
     def tmp_dir(self):
