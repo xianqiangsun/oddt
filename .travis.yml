@@ -76,6 +76,7 @@ install:
         conda install -q -c bioconda autodock-vina
         conda install -q -c conda-forge pytest pytest-xdist pytest-cov
         pip install coveralls
+        pip install pytest-rerunfailures
     - python setup.py install
 script:
     - pytest --cov=oddt -n 2 -d -v -s --durations=0 tests/
