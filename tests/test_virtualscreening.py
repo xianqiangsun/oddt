@@ -44,6 +44,7 @@ def test_vs_scoring_vina():
     assert mol_data['vina_repulsion'] == '3.63178'
 
 
+@pytest.mark.flaky(reruns=3)
 def test_vs_docking():
     """VS docking (Vina) tests"""
     vs = virtualscreening(n_cpu=1)
