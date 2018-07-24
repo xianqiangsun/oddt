@@ -15,6 +15,7 @@ setup(name='oddt',
                                                'PLECscore/*.json',
                                                ],
                     'oddt.toolkits.extras': ['pdb_residue_templates.smi'],
+                    'oddt': ['vina/*']
                     },
       setup_requires=['numpy'],
       install_requires=open('requirements.txt', 'r').readlines(),

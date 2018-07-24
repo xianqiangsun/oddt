@@ -89,9 +89,11 @@ class autodock_vina(object):
         # autodetect Vina executable
         if not executable:
             try:
-                self.executable = (subprocess.check_output(['which', 'vina'])
-                                   .decode('ascii').split('\n')[0])
-            except subprocess.CalledProcessError:
+                vina = os.path.join(oddt.__path__[0], 'vina', 'vina')
+                self.executable=vina
+                #self.executable = (subprocess.check_output(['which', 'vina'])
+                                   #.decode('ascii').split('\n')[0])
+            except IOError:
                 raise Exception('Could not find Autodock Vina binary.'
                                 'You have to install it globaly or supply binary'
                                 'full directory via `executable` parameter.')
